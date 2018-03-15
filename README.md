@@ -2,7 +2,7 @@
 
 ## What's this?
 
-Set of Kotlin extension functions that consume Firestore Collections and Documents asynchronous making use of Coroutines.
+Set of Kotlin extension functions that consume Firestore Collections and Documents asynchronously making use of Coroutines.
 
 ## Download
 
@@ -46,6 +46,39 @@ private fun parseUser(documentSnapshot: DocumentSnapshot) : User {
  ```
 
 ##### It can also be useful when parsing References from other Documents as Firestore does not fetch them automatically.
+
+## Collection Functions
+
+Function | Return Type
+------------ | -------------
+await (clazz: Class\<T>) | List\<T>
+await (parser: (documentSnapshot: DocumentSnapshot) -> T) | List\<T>
+addAwait (value: Any) | DocumentReference
+addAwait (value: Map<String, Any>) | DocumentReference
+
+## Document Functions
+
+Function | Return Type
+------------ | -------------
+await (clazz: Class\<T>) | T
+await (parser: (documentSnapshot: DocumentSnapshot) -> T) | T
+deleteAwait() | -
+updateAwait (var1: Map<String, Any>) | -
+updateAwait (var1: FieldPath, var2: Any, var3: List<Any>) | -
+updateAwait (var1: String, var2 : Any, var3: List<Any>) | -
+setAwait (var1: Any) | -
+setAwait (var1: Map<String, Any>) | -
+setAwait (var1: Any, var2 : SetOptions) | -
+setAwait(var1: Map<String, Any>, var2: SetOptions) | -
+
+## Query Functions
+Function | Return Type
+------------ | -------------
+await (clazz: Class\<T>) | List\<T>
+await (parser: (documentSnapshot: DocumentSnapshot) -> T) | List\<T>
+awaitSingle (clazz: Class\<T>) | T
+awaitSingle (parser: (documentSnapshot: DocumentSnapshot) -> T) | T
+
 
 ## Downsides
 
