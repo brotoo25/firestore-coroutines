@@ -12,7 +12,7 @@ Gradle:
 
 dependencies {
 
-    implementation 'com.github.brotoo25:Firestore-Coroutines:0.0.2'
+    implementation 'com.github.brotoo25:Firestore-Coroutines:0.0.1'
 }
 ```
 
@@ -82,7 +82,7 @@ awaitSingle (parser: (documentSnapshot: DocumentSnapshot) -> T) | T
 
 ## Downsides
 
-Coroutines were not built to provide streams of events, therefor we cannot take advantage of Firestore's realtime database updates. For that matter I recommend checking my [Firestore LiveData](https://github.com/brotoo25/Firestore-LiveData) project that makes use of Android Architecture Components to provide a lifecycle aware stream of data coming from your collections or documents.
+Coroutines were not built to provide streams of events, therefor we cannot take advantage of Firestore's realtime database updates. For that matter I recommend checking my [Firestore LiveData](https://github.com/abraaorl/Firestore-LiveData) project that makes use of Android Architecture Components to provide a lifecycle aware stream of data coming from your collections or documents.
 ## Next steps
 
  * Create sample app
