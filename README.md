@@ -12,7 +12,7 @@ Gradle:
 
 dependencies {
 
-    implementation 'com.kiwimob.firestore.coroutines:firestore-coroutines:0.0.1'
+    implementation 'com.github.brotoo25:Firestore-Coroutines:0.0.2'
 }
 ```
 
