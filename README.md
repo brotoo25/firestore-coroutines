@@ -9,10 +9,16 @@ Set of Kotlin extension functions that consume Firestore Collections and Documen
 Gradle:
 
 ```groovy
+allprojects {
+    repositories {
+        ...
+        maven { url 'https://jitpack.io' }
+    }
+}
 
 dependencies {
 
-    implementation 'com.github.brotoo25:Firestore-Coroutines:0.0.1'
+    implementation 'com.github.brotoo25:Firestore-Coroutines:0.0.2'
 }
 ```
 
