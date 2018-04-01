@@ -18,7 +18,7 @@ allprojects {
 
 dependencies {
 
-    implementation 'com.github.brotoo25:firestore-coroutines:0.0.2'
+    implementation 'com.github.brotoo25:firestore-coroutines:0.0.3'
 }
 ```
 
@@ -57,6 +57,7 @@ private fun parseUser(documentSnapshot: DocumentSnapshot) : User {
 
 Function | Return Type
 ------------ | -------------
+await () | QuerySnapshot
 await (clazz: Class\<T>) | List\<T>
 await (parser: (documentSnapshot: DocumentSnapshot) -> T) | List\<T>
 addAwait (value: Any) | DocumentReference
@@ -66,6 +67,7 @@ addAwait (value: Map<String, Any>) | DocumentReference
 
 Function | Return Type
 ------------ | -------------
+await () | DocumentSnapshot
 await (clazz: Class\<T>) | T
 await (parser: (documentSnapshot: DocumentSnapshot) -> T) | T
 deleteAwait() | -
@@ -80,6 +82,7 @@ setAwait(var1: Map<String, Any>, var2: SetOptions) | -
 ## Query Functions
 Function | Return Type
 ------------ | -------------
+await () | QuerySnapshot
 await (clazz: Class\<T>) | List\<T>
 await (parser: (documentSnapshot: DocumentSnapshot) -> T) | List\<T>
 awaitSingle (clazz: Class\<T>) | T
