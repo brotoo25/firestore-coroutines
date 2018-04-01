@@ -1,6 +1,9 @@
-package com.kiwimob.firestore.coroutine
+package com.kiwimob.firestore.coroutines
 
-import com.google.firebase.firestore.*
+import com.google.firebase.firestore.DocumentReference
+import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.FieldPath
+import com.google.firebase.firestore.SetOptions
 import kotlinx.coroutines.experimental.NonCancellable
 import kotlinx.coroutines.experimental.suspendCancellableCoroutine
 
@@ -13,6 +16,27 @@ suspend fun <T : Any> DocumentReference.await(parser: (documentSnapshot: Documen
         get().addOnCompleteListener {
             if (it.isSuccessful) {
                 continuation.resume(parser.invoke(it.result))
+            } else {
+                continuation.resumeWithException(it.exception!!)
+            }
+        }
+
+        continuation.invokeOnCompletion {
+            if (continuation.isCancelled)
+                try {
+                    NonCancellable.cancel()
+                } catch (ex: Throwable) {
+                    //Ignore cancel exception
+                }
+        }
+    }
+}
+
+suspend fun DocumentReference.await(): DocumentSnapshot {
+    return suspendCancellableCoroutine { continuation ->
+        get().addOnCompleteListener {
+            if (it.isSuccessful) {
+                continuation.resume(it.result)
             } else {
                 continuation.resumeWithException(it.exception!!)
             }
