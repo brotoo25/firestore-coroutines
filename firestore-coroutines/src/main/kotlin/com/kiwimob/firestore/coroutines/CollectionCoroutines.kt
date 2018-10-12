@@ -6,25 +6,28 @@ import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.QuerySnapshot
 import kotlinx.coroutines.experimental.NonCancellable
 import kotlinx.coroutines.experimental.suspendCancellableCoroutine
+import java.util.*
 
 suspend fun <T : Any> CollectionReference.await(clazz: Class<T>): List<T> {
-    return await { documentSnapshot -> documentSnapshot.toObject(clazz) }
+    return await { documentSnapshot -> documentSnapshot.toObject(clazz) as T }
 }
 
 suspend fun <T : Any> CollectionReference.await(parser: (documentSnapshot: DocumentSnapshot) -> T): List<T> {
     return suspendCancellableCoroutine { continuation ->
         get().addOnCompleteListener {
-            if (it.isSuccessful) {
+            if (it.isSuccessful && it.result != null) {
                 val list = arrayListOf<T>()
-                it.result.forEach { list.add(parser.invoke(it)) }
+                it.result?.forEach { list.add(parser.invoke(it)) }
 
                 continuation.resume(list)
-            } else {
+            } else if (it.exception != null){
                 continuation.resumeWithException(it.exception!!)
+            } else {
+                continuation.resumeWithException(EmptyStackException())
             }
         }
 
-        continuation.invokeOnCompletion {
+        continuation.invokeOnCancellation {
             if (continuation.isCancelled)
                 try {
                     NonCancellable.cancel()
@@ -38,14 +41,16 @@ suspend fun <T : Any> CollectionReference.await(parser: (documentSnapshot: Docum
 suspend fun CollectionReference.await() : QuerySnapshot {
     return suspendCancellableCoroutine { continuation ->
         get().addOnCompleteListener {
-            if (it.isSuccessful) {
-                continuation.resume(it.result)
-            } else {
+            if (it.isSuccessful && it.result != null) {
+                continuation.resume(it.result!!)
+            } else if (it.exception != null){
                 continuation.resumeWithException(it.exception!!)
+            } else {
+                continuation.resumeWithException(EmptyStackException())
             }
         }
 
-        continuation.invokeOnCompletion {
+        continuation.invokeOnCancellation {
             if (continuation.isCancelled)
                 try {
                     NonCancellable.cancel()
@@ -59,14 +64,16 @@ suspend fun CollectionReference.await() : QuerySnapshot {
 suspend fun CollectionReference.addAwait(value: Any): DocumentReference {
     return suspendCancellableCoroutine { continuation ->
         add(value).addOnCompleteListener {
-            if (it.isSuccessful) {
-                continuation.resume(it.result)
-            } else {
+            if (it.isSuccessful && it.result != null) {
+                continuation.resume(it.result!!)
+            } else if (it.exception != null){
                 continuation.resumeWithException(it.exception!!)
+            } else {
+                continuation.resumeWithException(EmptyStackException())
             }
         }
 
-        continuation.invokeOnCompletion {
+        continuation.invokeOnCancellation {
             if (continuation.isCancelled)
                 try {
                     NonCancellable.cancel()
@@ -80,14 +87,16 @@ suspend fun CollectionReference.addAwait(value: Any): DocumentReference {
 suspend fun CollectionReference.addAwait(value: Map<String, Any>): DocumentReference {
     return suspendCancellableCoroutine { continuation ->
         add(value).addOnCompleteListener {
-            if (it.isSuccessful) {
-                continuation.resume(it.result)
-            } else {
+            if (it.isSuccessful && it.result != null) {
+                continuation.resume(it.result!!)
+            } else if (it.exception != null){
                 continuation.resumeWithException(it.exception!!)
+            } else {
+                continuation.resumeWithException(EmptyStackException())
             }
         }
 
-        continuation.invokeOnCompletion {
+        continuation.invokeOnCancellation {
             if (continuation.isCancelled)
                 try {
                     NonCancellable.cancel()

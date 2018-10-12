@@ -18,7 +18,7 @@ allprojects {
 
 dependencies {
 
-    implementation 'com.github.brotoo25:firestore-coroutines:0.0.3'
+    implementation 'com.github.brotoo25:firestore-coroutines:0.0.4'
 }
 ```
 
@@ -50,6 +50,10 @@ private fun parseUser(documentSnapshot: DocumentSnapshot) : User {
     return User(name = documentSnapshot.getString("name"), email = documentSnapshot.getString("email"))
 }
  ```
+
+## Observing changes
+
+// TODO
 
 ##### It can also be useful when parsing References from other Documents as Firestore does not fetch them automatically.
 
@@ -87,11 +91,10 @@ await (clazz: Class\<T>) | List\<T>
 await (parser: (documentSnapshot: DocumentSnapshot) -> T) | List\<T>
 awaitSingle (clazz: Class\<T>) | T
 awaitSingle (parser: (documentSnapshot: DocumentSnapshot) -> T) | T
+observe (clazz: Class\<T>) | ReceiveChannel\<List\<T>>
+observe (parser: (documentSnapshot: DocumentSnapshot) -> T) | ReceiveChannel\<List\<T>>
 
 
-## Downsides
-
-Coroutines were not built to provide streams of events, therefor we cannot take advantage of Firestore's realtime database updates. For that matter I recommend checking my [Firestore LiveData](https://github.com/brotoo25/Firestore-LiveData) project that makes use of Android Architecture Components to provide a lifecycle aware stream of data coming from your collections or documents.
 ## Next steps
 
  * Create sample app
