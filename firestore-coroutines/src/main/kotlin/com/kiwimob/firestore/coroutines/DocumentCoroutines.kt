@@ -4,16 +4,17 @@ import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.SetOptions
-import kotlinx.coroutines.experimental.NonCancellable
-import kotlinx.coroutines.experimental.suspendCancellableCoroutine
 import java.util.*
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
+import kotlin.coroutines.suspendCoroutine
 
 suspend fun <T : Any> DocumentReference.await(clazz: Class<T>): T {
     return await { documentSnapshot -> documentSnapshot.toObject(clazz)!! }
 }
 
 suspend fun <T : Any> DocumentReference.await(parser: (documentSnapshot: DocumentSnapshot) -> T): T {
-    return suspendCancellableCoroutine { continuation ->
+    return suspendCoroutine { continuation ->
         get().addOnCompleteListener {
 
             if (it.isSuccessful && it.result != null) {
@@ -24,20 +25,11 @@ suspend fun <T : Any> DocumentReference.await(parser: (documentSnapshot: Documen
                 continuation.resumeWithException(EmptyStackException())
             }
         }
-
-        continuation.invokeOnCancellation {
-            if (continuation.isCancelled)
-                try {
-                    NonCancellable.cancel()
-                } catch (ex: Throwable) {
-                    //Ignore cancel exception
-                }
-        }
     }
 }
 
 suspend fun DocumentReference.await(): DocumentSnapshot {
-    return suspendCancellableCoroutine { continuation ->
+    return suspendCoroutine { continuation ->
         get().addOnCompleteListener {
             if (it.isSuccessful && it.result != null) {
                 continuation.resume(it.result!!)
@@ -47,20 +39,11 @@ suspend fun DocumentReference.await(): DocumentSnapshot {
                 continuation.resumeWithException(EmptyStackException())
             }
         }
-
-        continuation.invokeOnCancellation {
-            if (continuation.isCancelled)
-                try {
-                    NonCancellable.cancel()
-                } catch (ex: Throwable) {
-                    //Ignore cancel exception
-                }
-        }
     }
 }
 
 suspend fun DocumentReference.deleteAwait() {
-    return suspendCancellableCoroutine { continuation ->
+    return suspendCoroutine { continuation ->
         delete().addOnCompleteListener {
             if (it.isSuccessful) {
                 continuation.resume(Unit)
@@ -68,20 +51,11 @@ suspend fun DocumentReference.deleteAwait() {
                 continuation.resumeWithException(it.exception!!)
             }
         }
-
-        continuation.invokeOnCancellation {
-            if (continuation.isCancelled)
-                try {
-                    NonCancellable.cancel()
-                } catch (ex: Throwable) {
-                    //Ignore cancel exception
-                }
-        }
     }
 }
 
 suspend fun DocumentReference.updateAwait(var1: Map<String, Any>) {
-    return suspendCancellableCoroutine { continuation ->
+    return suspendCoroutine { continuation ->
         update(var1).addOnCompleteListener {
             if (it.isSuccessful) {
                 continuation.resume(Unit)
@@ -89,41 +63,23 @@ suspend fun DocumentReference.updateAwait(var1: Map<String, Any>) {
                 continuation.resumeWithException(it.exception!!)
             }
         }
-
-        continuation.invokeOnCancellation {
-            if (continuation.isCancelled)
-                try {
-                    NonCancellable.cancel()
-                } catch (ex: Throwable) {
-                    //Ignore cancel exception
-                }
-        }
     }
 }
 
 suspend fun DocumentReference.updateAwait(var1: FieldPath, var2: Any, var3: List<Any>) {
-    return suspendCancellableCoroutine { continuation ->
+    return suspendCoroutine { continuation ->
         update(var1, var2, var3).addOnCompleteListener {
             if (it.isSuccessful) {
                 continuation.resume(Unit)
             } else {
                 continuation.resumeWithException(it.exception!!)
             }
-        }
-
-        continuation.invokeOnCancellation {
-            if (continuation.isCancelled)
-                try {
-                    NonCancellable.cancel()
-                } catch (ex: Throwable) {
-                    //Ignore cancel exception
-                }
         }
     }
 }
 
 suspend fun DocumentReference.updateAwait(var1: String, var2 : Any, var3: List<Any>) {
-    return suspendCancellableCoroutine { continuation ->
+    return suspendCoroutine { continuation ->
         update(var1, var2, var3).addOnCompleteListener {
             if (it.isSuccessful) {
                 continuation.resume(Unit)
@@ -131,20 +87,11 @@ suspend fun DocumentReference.updateAwait(var1: String, var2 : Any, var3: List<A
                 continuation.resumeWithException(it.exception!!)
             }
         }
-
-        continuation.invokeOnCancellation {
-            if (continuation.isCancelled)
-                try {
-                    NonCancellable.cancel()
-                } catch (ex: Throwable) {
-                    //Ignore cancel exception
-                }
-        }
     }
 }
 
 suspend fun DocumentReference.setAwait(var1: Any) {
-    return suspendCancellableCoroutine { continuation ->
+    return suspendCoroutine { continuation ->
         set(var1).addOnCompleteListener {
             if (it.isSuccessful) {
                 continuation.resume(Unit)
@@ -152,35 +99,17 @@ suspend fun DocumentReference.setAwait(var1: Any) {
                 continuation.resumeWithException(it.exception!!)
             }
         }
-
-        continuation.invokeOnCancellation {
-            if (continuation.isCancelled)
-                try {
-                    NonCancellable.cancel()
-                } catch (ex: Throwable) {
-                    //Ignore cancel exception
-                }
-        }
     }
 }
 
 suspend fun DocumentReference.setAwait(var1: Any, var2 : SetOptions) {
-    return suspendCancellableCoroutine { continuation ->
+    return suspendCoroutine { continuation ->
         set(var1, var2).addOnCompleteListener {
             if (it.isSuccessful) {
                 continuation.resume(Unit)
             } else {
                 continuation.resumeWithException(it.exception!!)
             }
-        }
-
-        continuation.invokeOnCancellation {
-            if (continuation.isCancelled)
-                try {
-                    NonCancellable.cancel()
-                } catch (ex: Throwable) {
-                    //Ignore cancel exception
-                }
         }
     }
 }

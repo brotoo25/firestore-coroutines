@@ -4,9 +4,12 @@ import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.QuerySnapshot
-import kotlinx.coroutines.experimental.NonCancellable
-import kotlinx.coroutines.experimental.suspendCancellableCoroutine
+import kotlinx.coroutines.suspendCancellableCoroutine
 import java.util.*
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
+import kotlin.coroutines.suspendCoroutine
+
 
 suspend fun <T : Any> CollectionReference.await(clazz: Class<T>): List<T> {
     return await { documentSnapshot -> documentSnapshot.toObject(clazz) as T }
@@ -26,20 +29,11 @@ suspend fun <T : Any> CollectionReference.await(parser: (documentSnapshot: Docum
                 continuation.resumeWithException(EmptyStackException())
             }
         }
-
-        continuation.invokeOnCancellation {
-            if (continuation.isCancelled)
-                try {
-                    NonCancellable.cancel()
-                } catch (ex: Throwable) {
-                    //Ignore cancel exception
-                }
-        }
     }
 }
 
 suspend fun CollectionReference.await() : QuerySnapshot {
-    return suspendCancellableCoroutine { continuation ->
+    return suspendCoroutine { continuation ->
         get().addOnCompleteListener {
             if (it.isSuccessful && it.result != null) {
                 continuation.resume(it.result!!)
@@ -49,20 +43,11 @@ suspend fun CollectionReference.await() : QuerySnapshot {
                 continuation.resumeWithException(EmptyStackException())
             }
         }
-
-        continuation.invokeOnCancellation {
-            if (continuation.isCancelled)
-                try {
-                    NonCancellable.cancel()
-                } catch (ex: Throwable) {
-                    //Ignore cancel exception
-                }
-        }
     }
 }
 
 suspend fun CollectionReference.addAwait(value: Any): DocumentReference {
-    return suspendCancellableCoroutine { continuation ->
+    return suspendCoroutine { continuation ->
         add(value).addOnCompleteListener {
             if (it.isSuccessful && it.result != null) {
                 continuation.resume(it.result!!)
@@ -71,21 +56,12 @@ suspend fun CollectionReference.addAwait(value: Any): DocumentReference {
             } else {
                 continuation.resumeWithException(EmptyStackException())
             }
-        }
-
-        continuation.invokeOnCancellation {
-            if (continuation.isCancelled)
-                try {
-                    NonCancellable.cancel()
-                } catch (ex: Throwable) {
-                    //Ignore cancel exception
-                }
         }
     }
 }
 
 suspend fun CollectionReference.addAwait(value: Map<String, Any>): DocumentReference {
-    return suspendCancellableCoroutine { continuation ->
+    return suspendCoroutine { continuation ->
         add(value).addOnCompleteListener {
             if (it.isSuccessful && it.result != null) {
                 continuation.resume(it.result!!)
@@ -94,15 +70,6 @@ suspend fun CollectionReference.addAwait(value: Map<String, Any>): DocumentRefer
             } else {
                 continuation.resumeWithException(EmptyStackException())
             }
-        }
-
-        continuation.invokeOnCancellation {
-            if (continuation.isCancelled)
-                try {
-                    NonCancellable.cancel()
-                } catch (ex: Throwable) {
-                    //Ignore cancel exception
-                }
         }
     }
 }
