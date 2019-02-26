@@ -25,20 +25,13 @@ android {
     }
 }
 
-kotlin {
-    experimental {
-        coroutines "enable"
-    }
-}
-
 dependencies {
     // Kotlin
-    implementation "org.jetbrains.anko:anko-coroutines:0.10.6"
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:0.30.2"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.1.1"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
     // Firebase
-    compileOnly 'com.google.firebase:firebase-firestore:17.1.1'
+    compileOnly 'com.google.firebase:firebase-firestore:17.1.5'
 
     // Testing
     testImplementation 'junit:junit:4.12'
