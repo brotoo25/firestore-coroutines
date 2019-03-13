@@ -19,10 +19,8 @@ suspend fun <T : Any> DocumentReference.await(parser: (documentSnapshot: Documen
 
             if (it.isSuccessful && it.result != null) {
                 continuation.resume(parser(it.result!!))
-            } else if (it.exception != null){
-                continuation.resumeWithException(it.exception!!)
             } else {
-                continuation.resumeWithException(EmptyStackException())
+                continuation.resumeWithException(it.exception ?: IllegalStateException())
             }
         }
     }
@@ -33,10 +31,8 @@ suspend fun DocumentReference.await(): DocumentSnapshot {
         get().addOnCompleteListener {
             if (it.isSuccessful && it.result != null) {
                 continuation.resume(it.result!!)
-            } else if (it.exception != null){
-                continuation.resumeWithException(it.exception!!)
             } else {
-                continuation.resumeWithException(EmptyStackException())
+                continuation.resumeWithException(it.exception ?: IllegalStateException())
             }
         }
     }
@@ -48,7 +44,7 @@ suspend fun DocumentReference.deleteAwait() {
             if (it.isSuccessful) {
                 continuation.resume(Unit)
             } else {
-                continuation.resumeWithException(it.exception!!)
+                continuation.resumeWithException(it.exception ?: IllegalStateException())
             }
         }
     }
@@ -60,7 +56,7 @@ suspend fun DocumentReference.updateAwait(var1: Map<String, Any>) {
             if (it.isSuccessful) {
                 continuation.resume(Unit)
             } else {
-                continuation.resumeWithException(it.exception!!)
+                continuation.resumeWithException(it.exception ?: IllegalStateException())
             }
         }
     }
@@ -72,7 +68,7 @@ suspend fun DocumentReference.updateAwait(var1: FieldPath, var2: Any, var3: List
             if (it.isSuccessful) {
                 continuation.resume(Unit)
             } else {
-                continuation.resumeWithException(it.exception!!)
+                continuation.resumeWithException(it.exception ?: IllegalStateException())
             }
         }
     }
@@ -84,7 +80,7 @@ suspend fun DocumentReference.updateAwait(var1: String, var2 : Any, var3: List<A
             if (it.isSuccessful) {
                 continuation.resume(Unit)
             } else {
-                continuation.resumeWithException(it.exception!!)
+                continuation.resumeWithException(it.exception ?: IllegalStateException())
             }
         }
     }
@@ -96,7 +92,7 @@ suspend fun DocumentReference.setAwait(var1: Any) {
             if (it.isSuccessful) {
                 continuation.resume(Unit)
             } else {
-                continuation.resumeWithException(it.exception!!)
+                continuation.resumeWithException(it.exception ?: IllegalStateException())
             }
         }
     }
@@ -108,7 +104,7 @@ suspend fun DocumentReference.setAwait(var1: Any, var2 : SetOptions) {
             if (it.isSuccessful) {
                 continuation.resume(Unit)
             } else {
-                continuation.resumeWithException(it.exception!!)
+                continuation.resumeWithException(it.exception ?: IllegalStateException())
             }
         }
     }

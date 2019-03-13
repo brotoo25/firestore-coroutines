@@ -24,10 +24,8 @@ suspend fun Query.await(): QuerySnapshot {
         get().addOnCompleteListener {
             if (it.isSuccessful && it.result != null) {
                 continuation.resume(it.result!!)
-            } else if (it.exception != null) {
-                continuation.resumeWithException(it.exception!!)
             } else {
-                continuation.resumeWithException(EmptyStackException())
+                continuation.resumeWithException(it.exception ?: IllegalStateException())
             }
         }
     }
@@ -39,10 +37,8 @@ suspend fun <T : Any> Query.await(parser: (documentSnapshot: DocumentSnapshot) -
             if (it.isSuccessful && it.result != null) {
                 val list = it.result!!.map(parser)
                 continuation.resume(list)
-            } else if (it.exception != null) {
-                continuation.resumeWithException(it.exception!!)
             } else {
-                continuation.resumeWithException(EmptyStackException())
+                continuation.resumeWithException(it.exception ?: IllegalStateException())
             }
         }
     }
@@ -53,10 +49,8 @@ suspend fun <T : Any> Query.awaitSingle(parser: (documentSnapshot: DocumentSnaps
         get().addOnCompleteListener {
             if (it.isSuccessful && it.result != null) {
                 continuation.resume(parser(((it.result) as QuerySnapshot).documents[0]))
-            } else if (it.exception != null) {
-                continuation.resumeWithException(it.exception!!)
             } else {
-                continuation.resumeWithException(EmptyStackException())
+                continuation.resumeWithException(it.exception ?: IllegalStateException())
             }
         }
     }

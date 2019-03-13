@@ -5,7 +5,6 @@ import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.QuerySnapshot
 import kotlinx.coroutines.suspendCancellableCoroutine
-import java.util.*
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
@@ -21,10 +20,8 @@ suspend fun <T : Any> CollectionReference.await(parser: (documentSnapshot: Docum
             if (it.isSuccessful && it.result != null) {
                 val list = it.result!!.map(parser)
                 continuation.resume(list)
-            } else if (it.exception != null){
-                continuation.resumeWithException(it.exception!!)
             } else {
-                continuation.resumeWithException(EmptyStackException())
+                continuation.resumeWithException(it.exception ?: IllegalStateException())
             }
         }
     }
@@ -35,10 +32,8 @@ suspend fun CollectionReference.await() : QuerySnapshot {
         get().addOnCompleteListener {
             if (it.isSuccessful && it.result != null) {
                 continuation.resume(it.result!!)
-            } else if (it.exception != null){
-                continuation.resumeWithException(it.exception!!)
             } else {
-                continuation.resumeWithException(EmptyStackException())
+                continuation.resumeWithException(it.exception ?: IllegalStateException())
             }
         }
     }
@@ -49,10 +44,8 @@ suspend fun CollectionReference.addAwait(value: Any): DocumentReference {
         add(value).addOnCompleteListener {
             if (it.isSuccessful && it.result != null) {
                 continuation.resume(it.result!!)
-            } else if (it.exception != null){
-                continuation.resumeWithException(it.exception!!)
             } else {
-                continuation.resumeWithException(EmptyStackException())
+                continuation.resumeWithException(it.exception ?: IllegalStateException())
             }
         }
     }
@@ -63,10 +56,8 @@ suspend fun CollectionReference.addAwait(value: Map<String, Any>): DocumentRefer
         add(value).addOnCompleteListener {
             if (it.isSuccessful && it.result != null) {
                 continuation.resume(it.result!!)
-            } else if (it.exception != null){
-                continuation.resumeWithException(it.exception!!)
             } else {
-                continuation.resumeWithException(EmptyStackException())
+                continuation.resumeWithException(it.exception ?: IllegalStateException())
             }
         }
     }
