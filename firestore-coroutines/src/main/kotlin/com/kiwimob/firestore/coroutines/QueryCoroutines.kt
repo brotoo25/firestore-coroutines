@@ -37,8 +37,7 @@ suspend fun <T : Any> Query.await(parser: (documentSnapshot: DocumentSnapshot) -
     return suspendCoroutine { continuation ->
         get().addOnCompleteListener {
             if (it.isSuccessful && it.result != null) {
-                val list = arrayListOf<T>()
-                it.result?.forEach { list.add(parser(it)) }
+                val list = it.result!!.map(parser)
                 continuation.resume(list)
             } else if (it.exception != null) {
                 continuation.resumeWithException(it.exception!!)

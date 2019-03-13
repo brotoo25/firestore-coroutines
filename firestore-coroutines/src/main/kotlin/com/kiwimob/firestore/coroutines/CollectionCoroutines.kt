@@ -19,9 +19,7 @@ suspend fun <T : Any> CollectionReference.await(parser: (documentSnapshot: Docum
     return suspendCancellableCoroutine { continuation ->
         get().addOnCompleteListener {
             if (it.isSuccessful && it.result != null) {
-                val list = arrayListOf<T>()
-                it.result?.forEach { list.add(parser(it)) }
-
+                val list = it.result!!.map(parser)
                 continuation.resume(list)
             } else if (it.exception != null){
                 continuation.resumeWithException(it.exception!!)
