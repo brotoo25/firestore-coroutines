@@ -73,10 +73,7 @@ fun <T : Any> Query.observe(parser: (documentSnapshot: DocumentSnapshot) -> T): 
             return@addSnapshotListener
         }
 
-        val list = arrayListOf<T>()
-        querySnapshot.forEach {
-            list.add(parser(it))
-        }
+        val list = querySnapshot.map(parser)
         channel.sendBlocking(list)
     }
 
