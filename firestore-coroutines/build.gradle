@@ -31,7 +31,7 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
     // Firebase
-    compileOnly 'com.google.firebase:firebase-firestore:17.1.5'
+    compileOnly 'com.google.firebase:firebase-firestore:18.1.0'
 
     // Testing
     testImplementation 'junit:junit:4.12'
