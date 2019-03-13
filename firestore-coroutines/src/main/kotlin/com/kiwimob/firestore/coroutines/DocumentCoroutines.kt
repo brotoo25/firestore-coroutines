@@ -18,7 +18,7 @@ suspend fun <T : Any> DocumentReference.await(parser: (documentSnapshot: Documen
         get().addOnCompleteListener {
 
             if (it.isSuccessful && it.result != null) {
-                continuation.resume(parser.invoke(it.result!!))
+                continuation.resume(parser(it.result!!))
             } else if (it.exception != null){
                 continuation.resumeWithException(it.exception!!)
             } else {

@@ -38,7 +38,7 @@ suspend fun <T : Any> Query.await(parser: (documentSnapshot: DocumentSnapshot) -
         get().addOnCompleteListener {
             if (it.isSuccessful && it.result != null) {
                 val list = arrayListOf<T>()
-                it.result?.forEach { list.add(parser.invoke(it)) }
+                it.result?.forEach { list.add(parser(it)) }
                 continuation.resume(list)
             } else if (it.exception != null) {
                 continuation.resumeWithException(it.exception!!)
@@ -53,7 +53,7 @@ suspend fun <T : Any> Query.awaitSingle(parser: (documentSnapshot: DocumentSnaps
     return suspendCoroutine { continuation ->
         get().addOnCompleteListener {
             if (it.isSuccessful && it.result != null) {
-                continuation.resume(parser.invoke(((it.result) as QuerySnapshot).documents[0]))
+                continuation.resume(parser(((it.result) as QuerySnapshot).documents[0]))
             } else if (it.exception != null) {
                 continuation.resumeWithException(it.exception!!)
             } else {
@@ -82,7 +82,7 @@ fun <T : Any> Query.observe(parser: (documentSnapshot: DocumentSnapshot) -> T): 
 
         val list = arrayListOf<T>()
         querySnapshot.forEach {
-            list.add(parser.invoke(it))
+            list.add(parser(it))
         }
         channel.sendBlocking(list)
     }

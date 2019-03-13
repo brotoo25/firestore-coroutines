@@ -20,7 +20,7 @@ suspend fun <T : Any> CollectionReference.await(parser: (documentSnapshot: Docum
         get().addOnCompleteListener {
             if (it.isSuccessful && it.result != null) {
                 val list = arrayListOf<T>()
-                it.result?.forEach { list.add(parser.invoke(it)) }
+                it.result?.forEach { list.add(parser(it)) }
 
                 continuation.resume(list)
             } else if (it.exception != null){
