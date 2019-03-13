@@ -6,9 +6,9 @@ import com.google.firebase.firestore.QuerySnapshot
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.sendBlocking
+import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
-import kotlin.coroutines.suspendCoroutine
 
 suspend fun <T : Any> Query.await(clazz: Class<T>): List<T> {
     return await { documentSnapshot -> documentSnapshot.toObject(clazz) as T }
@@ -19,7 +19,7 @@ suspend fun <T : Any> Query.awaitSingle(clazz: Class<T>): T {
 }
 
 suspend fun Query.await(): QuerySnapshot {
-    return suspendCoroutine { continuation ->
+    return suspendCancellableCoroutine { continuation ->
         get().addOnCompleteListener {
             if (it.isSuccessful && it.result != null) {
                 continuation.resume(it.result!!)
@@ -31,7 +31,7 @@ suspend fun Query.await(): QuerySnapshot {
 }
 
 suspend fun <T : Any> Query.await(parser: (documentSnapshot: DocumentSnapshot) -> T): List<T> {
-    return suspendCoroutine { continuation ->
+    return suspendCancellableCoroutine { continuation ->
         get().addOnCompleteListener {
             if (it.isSuccessful && it.result != null) {
                 val list = it.result!!.map(parser)
@@ -44,7 +44,7 @@ suspend fun <T : Any> Query.await(parser: (documentSnapshot: DocumentSnapshot) -
 }
 
 suspend fun <T : Any> Query.awaitSingle(parser: (documentSnapshot: DocumentSnapshot) -> T): T {
-    return suspendCoroutine { continuation ->
+    return suspendCancellableCoroutine { continuation ->
         get().addOnCompleteListener {
             if (it.isSuccessful && it.result != null) {
                 continuation.resume(parser(((it.result) as QuerySnapshot).documents[0]))

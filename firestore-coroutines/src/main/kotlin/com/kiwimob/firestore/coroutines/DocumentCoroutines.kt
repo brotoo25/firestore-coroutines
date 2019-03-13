@@ -7,14 +7,13 @@ import com.google.firebase.firestore.SetOptions
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
-import kotlin.coroutines.suspendCoroutine
 
 suspend fun <T : Any> DocumentReference.await(clazz: Class<T>): T {
     return await { documentSnapshot -> documentSnapshot.toObject(clazz)!! }
 }
 
 suspend fun <T : Any> DocumentReference.await(parser: (documentSnapshot: DocumentSnapshot) -> T): T {
-    return suspendCoroutine { continuation ->
+    return suspendCancellableCoroutine { continuation ->
         get().addOnCompleteListener {
 
             if (it.isSuccessful && it.result != null) {
@@ -27,7 +26,7 @@ suspend fun <T : Any> DocumentReference.await(parser: (documentSnapshot: Documen
 }
 
 suspend fun DocumentReference.await(): DocumentSnapshot {
-    return suspendCoroutine { continuation ->
+    return suspendCancellableCoroutine { continuation ->
         get().addOnCompleteListener {
             if (it.isSuccessful && it.result != null) {
                 continuation.resume(it.result!!)
@@ -39,7 +38,7 @@ suspend fun DocumentReference.await(): DocumentSnapshot {
 }
 
 suspend fun DocumentReference.deleteAwait() {
-    return suspendCoroutine { continuation ->
+    return suspendCancellableCoroutine { continuation ->
         delete().addOnCompleteListener {
             if (it.isSuccessful) {
                 continuation.resume(Unit)
@@ -51,7 +50,7 @@ suspend fun DocumentReference.deleteAwait() {
 }
 
 suspend fun DocumentReference.updateAwait(var1: Map<String, Any>) {
-    return suspendCoroutine { continuation ->
+    return suspendCancellableCoroutine { continuation ->
         update(var1).addOnCompleteListener {
             if (it.isSuccessful) {
                 continuation.resume(Unit)
@@ -63,7 +62,7 @@ suspend fun DocumentReference.updateAwait(var1: Map<String, Any>) {
 }
 
 suspend fun DocumentReference.updateAwait(var1: FieldPath, var2: Any, var3: List<Any>) {
-    return suspendCoroutine { continuation ->
+    return suspendCancellableCoroutine { continuation ->
         update(var1, var2, var3).addOnCompleteListener {
             if (it.isSuccessful) {
                 continuation.resume(Unit)
@@ -75,7 +74,7 @@ suspend fun DocumentReference.updateAwait(var1: FieldPath, var2: Any, var3: List
 }
 
 suspend fun DocumentReference.updateAwait(var1: String, var2 : Any, var3: List<Any>) {
-    return suspendCoroutine { continuation ->
+    return suspendCancellableCoroutine { continuation ->
         update(var1, var2, var3).addOnCompleteListener {
             if (it.isSuccessful) {
                 continuation.resume(Unit)
@@ -87,7 +86,7 @@ suspend fun DocumentReference.updateAwait(var1: String, var2 : Any, var3: List<A
 }
 
 suspend fun DocumentReference.setAwait(var1: Any) {
-    return suspendCoroutine { continuation ->
+    return suspendCancellableCoroutine { continuation ->
         set(var1).addOnCompleteListener {
             if (it.isSuccessful) {
                 continuation.resume(Unit)
@@ -99,7 +98,7 @@ suspend fun DocumentReference.setAwait(var1: Any) {
 }
 
 suspend fun DocumentReference.setAwait(var1: Any, var2 : SetOptions) {
-    return suspendCoroutine { continuation ->
+    return suspendCancellableCoroutine { continuation ->
         set(var1, var2).addOnCompleteListener {
             if (it.isSuccessful) {
                 continuation.resume(Unit)

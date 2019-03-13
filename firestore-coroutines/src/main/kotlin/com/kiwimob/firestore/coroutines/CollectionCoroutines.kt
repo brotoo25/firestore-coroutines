@@ -7,8 +7,6 @@ import com.google.firebase.firestore.QuerySnapshot
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
-import kotlin.coroutines.suspendCoroutine
-
 
 suspend fun <T : Any> CollectionReference.await(clazz: Class<T>): List<T> {
     return await { documentSnapshot -> documentSnapshot.toObject(clazz) as T }
@@ -28,7 +26,7 @@ suspend fun <T : Any> CollectionReference.await(parser: (documentSnapshot: Docum
 }
 
 suspend fun CollectionReference.await() : QuerySnapshot {
-    return suspendCoroutine { continuation ->
+    return suspendCancellableCoroutine { continuation ->
         get().addOnCompleteListener {
             if (it.isSuccessful && it.result != null) {
                 continuation.resume(it.result!!)
@@ -40,7 +38,7 @@ suspend fun CollectionReference.await() : QuerySnapshot {
 }
 
 suspend fun CollectionReference.addAwait(value: Any): DocumentReference {
-    return suspendCoroutine { continuation ->
+    return suspendCancellableCoroutine { continuation ->
         add(value).addOnCompleteListener {
             if (it.isSuccessful && it.result != null) {
                 continuation.resume(it.result!!)
@@ -52,7 +50,7 @@ suspend fun CollectionReference.addAwait(value: Any): DocumentReference {
 }
 
 suspend fun CollectionReference.addAwait(value: Map<String, Any>): DocumentReference {
-    return suspendCoroutine { continuation ->
+    return suspendCancellableCoroutine { continuation ->
         add(value).addOnCompleteListener {
             if (it.isSuccessful && it.result != null) {
                 continuation.resume(it.result!!)
