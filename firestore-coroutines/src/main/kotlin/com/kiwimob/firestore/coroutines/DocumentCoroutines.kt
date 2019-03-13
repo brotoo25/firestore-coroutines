@@ -4,7 +4,7 @@ import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.SetOptions
-import java.util.*
+import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
@@ -105,6 +105,30 @@ suspend fun DocumentReference.setAwait(var1: Any, var2 : SetOptions) {
                 continuation.resume(Unit)
             } else {
                 continuation.resumeWithException(it.exception ?: IllegalStateException())
+            }
+        }
+    }
+}
+
+suspend fun DocumentReference.setAwait(data: Map<String, Any>) {
+    return suspendCancellableCoroutine { continuation ->
+        set(data).addOnCompleteListener {
+            if (it.isSuccessful) {
+                continuation.resume(Unit)
+            } else {
+                continuation.resumeWithException(it.exception!!)
+            }
+        }
+    }
+}
+
+suspend fun DocumentReference.setAwait(data: Map<String, Any>, options: SetOptions) {
+    return suspendCancellableCoroutine { continuation ->
+        set(data, options).addOnCompleteListener {
+            if (it.isSuccessful) {
+                continuation.resume(Unit)
+            } else {
+                continuation.resumeWithException(it.exception!!)
             }
         }
     }
