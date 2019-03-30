@@ -18,7 +18,7 @@ allprojects {
 
 dependencies {
 
-    implementation 'com.github.brotoo25:firestore-coroutines:0.0.5'
+    implementation 'com.github.brotoo25:firestore-coroutines:0.0.6'
 }
 ```
 
@@ -26,7 +26,7 @@ dependencies {
 
 ```java
 
-launch(UI) {
+GlobalScope.launch() {
     val result = FirebaseFirestore.getInstance().collection("users").await(User::class.java)
 
     for (document in result) {
@@ -42,7 +42,7 @@ launch(UI) {
  In case of the default document parser not working for your use case there is also the option to pass a parser function as an argument to handle the mapping behaviour.
 
  ```java
-launch(UI) {
+GlobalScope.launch() {
     val users = FirebaseFirestore.getInstance().collection("users").await({parseUser(it)})
 }
 
@@ -79,9 +79,9 @@ updateAwait (var1: Map<String, Any>) | -
 updateAwait (var1: FieldPath, var2: Any, var3: List<Any>) | -
 updateAwait (var1: String, var2 : Any, var3: List<Any>) | -
 setAwait (var1: Any) | -
-setAwait (var1: Map<String, Any>) | -
 setAwait (var1: Any, var2 : SetOptions) | -
-setAwait(var1: Map<String, Any>, var2: SetOptions) | -
+setAwait (var1: Map<String, Any>) | -
+setAwait (var1: Map<String, Any>, var2: SetOptions) | -
 
 ## Query Functions
 Function | Return Type
