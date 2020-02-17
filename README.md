@@ -18,7 +18,7 @@ allprojects {
 
 dependencies {
 
-    implementation 'com.github.brotoo25:firestore-coroutines:0.0.7'
+    implementation 'com.github.brotoo25:firestore-coroutines:0.0.9'
 }
 ```
 
@@ -27,73 +27,38 @@ dependencies {
 ```java
 
 GlobalScope.launch() {
-    val result = FirebaseFirestore.getInstance().collection("users").await(User::class.java)
+    val users =
+        FirebaseFirestore
+            .getInstance()
+            .collection("users")
+            .get()
+            .await()
+            .toObjects<User>
 
-    for (document in result) {
+    for (document in users) {
         Log.d("MainActivity", document.name + " => " + document.email)
     }
 }
 ```
 
-## Parsing results
-
- When passing the return class type to the await function the default **DocumentSnapshot.toObject()** is called in order to parse the final result.
- <br><br>
- In case of the default document parser not working for your use case there is also the option to pass a parser function as an argument to handle the mapping behaviour.
-
- ```java
-GlobalScope.launch() {
-    val users = FirebaseFirestore.getInstance().collection("users").await({parseUser(it)})
-}
-
-private fun parseUser(documentSnapshot: DocumentSnapshot) : User {
-    return User(name = documentSnapshot.getString("name"), email = documentSnapshot.getString("email"))
-}
- ```
-
 ## Observing changes
 
-// TODO
+The new Flow Api is used to get realtime updates from Firestore Collections/Documents:
 
-##### It can also be useful when parsing References from other Documents as Firestore does not fetch them automatically.
+```java
 
-## Collection Functions
-
-Function | Return Type
------------- | -------------
-await () | QuerySnapshot
-await (clazz: Class\<T>) | List\<T>
-await (parser: (documentSnapshot: DocumentSnapshot) -> T) | List\<T>
-addAwait (value: Any) | DocumentReference
-addAwait (value: Map<String, Any>) | DocumentReference
-
-## Document Functions
-
-Function | Return Type
------------- | -------------
-await () | DocumentSnapshot
-await (clazz: Class\<T>) | T
-await (parser: (documentSnapshot: DocumentSnapshot) -> T) | T
-deleteAwait() | -
-updateAwait (var1: Map<String, Any>) | -
-updateAwait (var1: FieldPath, var2: Any, var3: List<Any>) | -
-updateAwait (var1: String, var2 : Any, var3: List<Any>) | -
-setAwait (var1: Any) | -
-setAwait (var1: Any, var2 : SetOptions) | -
-setAwait (var1: Map<String, Any>) | -
-setAwait (var1: Map<String, Any>, var2: SetOptions) | -
-
-## Query Functions
-Function | Return Type
------------- | -------------
-await () | QuerySnapshot
-await (clazz: Class\<T>) | List\<T>
-await (parser: (documentSnapshot: DocumentSnapshot) -> T) | List\<T>
-awaitSingle (clazz: Class\<T>) | T
-awaitSingle (parser: (documentSnapshot: DocumentSnapshot) -> T) | T
-observe (clazz: Class\<T>) | ReceiveChannel\<List\<T>>
-observe (parser: (documentSnapshot: DocumentSnapshot) -> T) | ReceiveChannel\<List\<T>>
-
+GlobalScope.launch() {
+    val users =
+        FirebaseFirestore
+            .getInstance()
+            .collection("users")
+            .snapshotAsFlow()
+            .collect {
+                val result = it.toObjects<User>
+                Log.d("MainActivity", "Current users: $result.size")
+            }
+}
+```
 
 ## Next steps
 
