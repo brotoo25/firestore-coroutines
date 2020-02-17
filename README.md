@@ -18,7 +18,7 @@ allprojects {
 
 dependencies {
 
-    implementation 'com.github.brotoo25:firestore-coroutines:0.0.9'
+    implementation 'com.github.brotoo25:firestore-coroutines:1.0.0'
 }
 ```
 
@@ -33,7 +33,7 @@ GlobalScope.launch() {
             .collection("users")
             .get()
             .await()
-            .toObjects<User>
+            .toObjects(User::class.java)
 
     for (document in users) {
         Log.d("MainActivity", document.name + " => " + document.email)
@@ -48,15 +48,14 @@ The new Flow Api is used to get realtime updates from Firestore Collections/Docu
 ```java
 
 GlobalScope.launch() {
-    val users =
-        FirebaseFirestore
-            .getInstance()
-            .collection("users")
-            .snapshotAsFlow()
-            .collect {
-                val result = it.toObjects<User>
-                Log.d("MainActivity", "Current users: $result.size")
-            }
+    FirebaseFirestore
+        .getInstance()
+        .collection("users")
+        .snapshotAsFlow()
+        .collect {
+            val result = it.toObjects(User::class.java)
+            Log.d("MainActivity", "Current users: $result.size")
+        }
 }
 ```
 
