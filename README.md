@@ -18,7 +18,7 @@ allprojects {
 
 dependencies {
 
-    implementation 'com.github.brotoo25:firestore-coroutines:1.0.1'
+    implementation 'com.github.brotoo25:firestore-coroutines:1.0.2'
 }
 ```
 
